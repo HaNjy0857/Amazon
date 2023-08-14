@@ -35,5 +35,25 @@ namespace Amazon.Controllers
             }
             return View(obj);
         }
+        public IActionResult Edit(int? id)
+        {
+            var result = _db.Categories.FirstOrDefault(x => x.Id == id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return View(result);
+        }
+        [HttpPut]
+        public IActionResult Edit(Category obj)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Update(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
     }
 }
