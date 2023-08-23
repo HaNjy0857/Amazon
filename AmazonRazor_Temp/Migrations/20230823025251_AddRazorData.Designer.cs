@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AmazonRazor_Temp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230822163817_AddCategoryToDb")]
-    partial class AddCategoryToDb
+    [Migration("20230823025251_AddRazorData")]
+    partial class AddRazorData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

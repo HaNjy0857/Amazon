@@ -7,7 +7,7 @@
 namespace AmazonRazor_Temp.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCategoryToDb : Migration
+    public partial class AddRazorData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
