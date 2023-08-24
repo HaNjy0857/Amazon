@@ -27,6 +27,7 @@ namespace AmazonRazor_Temp.Pages.Categories
             {
                 _db.Categories.Update(Category);
                 _db.SaveChanges();
+                TempData["success"] = "Category updated successfully";
                 return RedirectToPage("Index");
             }
             return Page();
