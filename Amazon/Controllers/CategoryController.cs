@@ -1,4 +1,4 @@
-﻿using Amazon.Data;
+﻿using Amazon.DataAccess.Data;
 using Amazon.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +44,7 @@ namespace Amazon.Controllers
                 return NotFound();
             }
             return View(result);
-        }
+        } 
         [HttpPost]
         public IActionResult Edit(Category obj)
         {

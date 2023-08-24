@@ -1,4 +1,4 @@
-using Amazon.Data;
+using Amazon.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

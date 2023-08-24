@@ -1,7 +1,7 @@
 ﻿using Amazon.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Amazon.Data
+namespace Amazon.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {
