@@ -1,4 +1,5 @@
 ﻿using Amazon.DataAccess.Data;
+using Amazon.DataAccess.Repository.IRepository;
 using Amazon.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,15 +7,15 @@ namespace Amazon.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public CategoryController(ApplicationDbContext db)
+        public CategoryController(ICategoryRepository categoryRepo)
         {
-            _db = db;
+            _categoryRepo = categoryRepo;
         }
         public IActionResult Index()
         {
-            List<Category> obj = _db.Categories.ToList();
+            List<Category> obj = _categoryRepo.GetAll().ToList();
             return View(obj);
         }
         public IActionResult Create() {
@@ -29,8 +30,8 @@ namespace Amazon.Controllers
             }
             if(ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _categoryRepo.Add(obj);
+                _categoryRepo.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
@@ -38,7 +39,7 @@ namespace Amazon.Controllers
         }
         public IActionResult Edit(int? id)
         {
-            var result = _db.Categories.FirstOrDefault(x => x.Id == id);
+            var result = _categoryRepo.Get(x => x.Id == id);
             if (result == null)
             {
                 return NotFound();
@@ -50,8 +51,8 @@ namespace Amazon.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(obj);
-                _db.SaveChanges();
+                _categoryRepo.Update(obj);
+                _categoryRepo.Save();
                 TempData["success"] = "Category updated successfully";
                 return RedirectToAction("Index");
             }
@@ -59,7 +60,7 @@ namespace Amazon.Controllers
 		}
 		public IActionResult Delete(int? id)
 		{
-			var result = _db.Categories.FirstOrDefault(x => x.Id == id);
+			var result = _categoryRepo.Get(x => x.Id == id);
 			if (result == null)
 			{
 				return NotFound();
@@ -69,13 +70,13 @@ namespace Amazon.Controllers
 		[HttpPost, ActionName("Delete")]
 		public IActionResult DeletePost(int? id)
 		{
-            Category? obj = _db.Categories.Find(id);
+            Category? obj = _categoryRepo.Get(x => x.Id == id);
             if(obj == null)
             {
                 return NotFound();
             }
-            _db.Categories.Remove(obj);
-			_db.SaveChanges();
+            _categoryRepo.Remove(obj);
+            _categoryRepo.Save();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
 		}
