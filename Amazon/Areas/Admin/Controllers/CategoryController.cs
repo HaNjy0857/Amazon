@@ -1,37 +1,38 @@
-﻿using Amazon.DataAccess.Data;
-using Amazon.DataAccess.Repository.IRepository;
+﻿using Amazon.DataAccess.Repository.IRepository;
 using Amazon.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Amazon.Controllers
+namespace Amazon.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ICategoryRepository categoryRepo)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryRepo = categoryRepo;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            List<Category> obj = _categoryRepo.GetAll().ToList();
+            List<Category> obj = _unitOfWork.Category.GetAll().ToList();
             return View(obj);
         }
-        public IActionResult Create() {
+        public IActionResult Create()
+        {
             return View();
         }
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            if(obj.Name == obj.DisplayOrder.ToString())
+            if (obj.Name == obj.DisplayOrder.ToString())
             {
                 ModelState.AddModelError("name", "The DisplayOrder cannot exactly match the Name.");
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _categoryRepo.Add(obj);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
@@ -39,46 +40,46 @@ namespace Amazon.Controllers
         }
         public IActionResult Edit(int? id)
         {
-            var result = _categoryRepo.Get(x => x.Id == id);
+            var result = _unitOfWork.Category.Get(x => x.Id == id);
             if (result == null)
             {
                 return NotFound();
             }
             return View(result);
-        } 
+        }
         [HttpPost]
         public IActionResult Edit(Category obj)
         {
             if (ModelState.IsValid)
             {
-                _categoryRepo.Update(obj);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Update(obj);
+                _unitOfWork.Save();
                 TempData["success"] = "Category updated successfully";
                 return RedirectToAction("Index");
             }
             return View();
-		}
-		public IActionResult Delete(int? id)
-		{
-			var result = _categoryRepo.Get(x => x.Id == id);
-			if (result == null)
-			{
-				return NotFound();
-			}
-			return View(result);
-		}
-		[HttpPost, ActionName("Delete")]
-		public IActionResult DeletePost(int? id)
-		{
-            Category? obj = _categoryRepo.Get(x => x.Id == id);
-            if(obj == null)
+        }
+        public IActionResult Delete(int? id)
+        {
+            var result = _unitOfWork.Category.Get(x => x.Id == id);
+            if (result == null)
             {
                 return NotFound();
             }
-            _categoryRepo.Remove(obj);
-            _categoryRepo.Save();
+            return View(result);
+        }
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePost(int? id)
+        {
+            Category? obj = _unitOfWork.Category.Get(x => x.Id == id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Save();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
-		}
-	}
+        }
+    }
 }

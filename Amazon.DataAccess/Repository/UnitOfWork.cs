@@ -1,18 +1,21 @@
-﻿using Amazon.DataAccess.Repository.IRepository;
+﻿using Amazon.DataAccess.Data;
+using Amazon.DataAccess.Repository.IRepository;
 
 namespace Amazon.DataAccess.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public UnitOfWork()
-        {
+        private readonly ApplicationDbContext _db;
 
+        public ICategoryRepository Category { get; private set; }
+        public UnitOfWork(ApplicationDbContext db)
+        {
+            _db = db;
         }
-        public ICategoryRepository categoryRepository { get; private set; }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _db.SaveChanges();
         }
     }
 }
