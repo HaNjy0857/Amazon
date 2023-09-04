@@ -15,6 +15,8 @@ namespace Amazon.DataAccess.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<OrderHeader> OrderHeaders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -43,7 +45,7 @@ namespace Amazon.DataAccess.Data
                     Price50 = 85,
                     Price100 = 80,
                     CategoryId = 1,
-                    ImageUrl = ""
+                    ImageUrl = "\\images\\product\\885a5562-abd6-44b0-9eb4-5f02bff1c804.jpg"
                 },
                 new Product
                 {
@@ -57,7 +59,7 @@ namespace Amazon.DataAccess.Data
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 1,
-                    ImageUrl = ""
+                    ImageUrl = "\\images\\product\\771e40d2-246c-472c-bbf8-31e074bf45a8.jpg"
                 },
                 new Product
                 {
@@ -71,7 +73,7 @@ namespace Amazon.DataAccess.Data
                     Price50 = 40,
                     Price100 = 35,
                     CategoryId = 1,
-                    ImageUrl = ""
+                    ImageUrl = "\\images\\product\\c3f5a802-53bc-4462-b167-fcdd18c9055c.jpg"
                 },
                 new Product
                 {
@@ -85,7 +87,7 @@ namespace Amazon.DataAccess.Data
                     Price50 = 60,
                     Price100 = 55,
                     CategoryId = 2,
-                    ImageUrl = ""
+                    ImageUrl = "\\images\\product\\f64c40f6-9576-4868-b8b7-a490d45d8f97.jpg"
                 },
                 new Product
                 {
@@ -99,7 +101,7 @@ namespace Amazon.DataAccess.Data
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 2,
-                    ImageUrl = ""
+                    ImageUrl = "\\images\\product\\27f1e5fa-fe9a-436f-be7d-200a0f58cca9.jpg"
                 },
                 new Product
                 {
@@ -113,7 +115,7 @@ namespace Amazon.DataAccess.Data
                     Price50 = 22,
                     Price100 = 20,
                     CategoryId = 3,
-                    ImageUrl = ""
+                    ImageUrl = "\\images\\product\\73415ed4-30d8-431f-957d-46cf7075fa30.jpg"
                 }
             );
         }
