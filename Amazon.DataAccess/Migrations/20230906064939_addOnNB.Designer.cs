@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Amazon.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230904105647_addSessionIdToHeader")]
-    partial class addSessionIdToHeader
+    [Migration("20230906064939_addOnNB")]
+    partial class addOnNB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
