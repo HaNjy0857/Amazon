@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Amazon.Models\Amazon.Models.csproj" />
+    <ProjectReference Include="..\Amazon.Utility\Amazon.Utility.csproj" />
   </ItemGroup>
 
 </Project>
