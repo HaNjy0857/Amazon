@@ -16,40 +16,41 @@ namespace Amazon.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class UserController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(ApplicationDbContext db,
-            UserManager<IdentityUser> userManager)
+        public UserController(RoleManager<IdentityRole> roleManager,
+            UserManager<IdentityUser> userManager,
+            IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _roleManager = roleManager;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult RoleManagement(string userId)
+        public async Task<IActionResult> RoleManagement(string userId)
         {
-            string RoleID = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
-
             RoleManagementVM RoleVM = new RoleManagementVM()
             {
-                ApplicationUser = _db.ApplicationUsers.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
-                RoleList = _db.Roles.Select(i => new SelectListItem
+                ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId, includeProperties:"Company"),
+                RoleList = _roleManager.Roles.Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Name
                 }),
-                CompanyList = _db.Companies.Select(i => new SelectListItem
+                CompanyList = _unitOfWork.Company.GetAll().Select(i => new SelectListItem
                 {
                     Text = i.Name,
                     Value = i.Id.ToString()
                 })
             };
 
-            RoleVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == RoleID).Name;
+            RoleVM.ApplicationUser.Role = await _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(u => u.Id == userId)).;
             return View(RoleVM);
         }
 
