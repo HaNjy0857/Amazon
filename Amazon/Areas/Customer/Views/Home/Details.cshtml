@@ -30,8 +30,10 @@
                                     @foreach(var imageWithIndex in Model.Product.ProductImages
                                    .Select((images, index) => new { Image = images, Index = index }))
                                     {
-                                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@imageWithIndex.Index" 
-                                        class="@(imageWithIndex.Index == 0? "active":"")" aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#carouselExampleIndicators" 
+                                        data-bs-slide-to="@imageWithIndex.Index" 
+                                        class="@(imageWithIndex.Index == 0? "active":"")" aria-current="true" 
+                                        aria-label="Slide 1"></button>
                                         
                                     }
 
