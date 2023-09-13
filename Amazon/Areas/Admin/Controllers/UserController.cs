@@ -50,29 +50,39 @@ namespace Amazon.Areas.Admin.Controllers
                 })
             };
 
-            RoleVM.ApplicationUser.Role = await _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(u => u.Id == userId)).;
+            RoleVM.ApplicationUser.Role = (await _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(u => u.Id == userId))).FirstOrDefault();
             return View(RoleVM);
         }
 
         [HttpPost]
         public async Task<IActionResult> RoleManagement(RoleManagementVM roleManagementVM)
         {
-            string RoleID = _db.UserRoles.FirstOrDefault(u => u.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
-            string oldRole = _db.Roles.FirstOrDefault(u => u.Id == RoleID).Name;
-            if(!(roleManagementVM.ApplicationUser.Role == oldRole))
+            string oldRole = (await _userManager.GetRolesAsync(_unitOfWork.ApplicationUser.Get(u => u.Id == roleManagementVM.ApplicationUser.Id))).FirstOrDefault();
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == roleManagementVM.ApplicationUser.Id);
+
+            if (!(roleManagementVM.ApplicationUser.Role == oldRole))
             {
-                ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == roleManagementVM.ApplicationUser.Id);
-                if(roleManagementVM.ApplicationUser.Role == SD.Role_Company)
+                if (roleManagementVM.ApplicationUser.Role == SD.Role_Company)
                 {
                     applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
                 }
-                if(oldRole == SD.Role_Company)
+                if (oldRole == SD.Role_Company)
                 {
                     applicationUser.CompanyId = null;
                 }
-                await _db.SaveChangesAsync();
+                _unitOfWork.ApplicationUser.Update(applicationUser);
+                _unitOfWork.Save();
                 await _userManager.RemoveFromRoleAsync(applicationUser, oldRole);
                 await _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role);
+            }
+            else
+            {
+                if(oldRole == SD.Role_Company && applicationUser.CompanyId != roleManagementVM.ApplicationUser.CompanyId)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                    _unitOfWork.ApplicationUser.Update(applicationUser);
+                    _unitOfWork.Save();
+                }
             }
 
             return RedirectToAction("Index");
@@ -80,19 +90,15 @@ namespace Amazon.Areas.Admin.Controllers
 
         #region API CALLS
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            List<ApplicationUser> objUserList = _db.ApplicationUsers.Include(u => u.Company).ToList();
-
-            var userRoles = _db.UserRoles.ToList();
-            var roles = _db.Roles.ToList();
+            List<ApplicationUser> objUserList = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Company").ToList();
 
             foreach(var user in objUserList)
             {
-                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
-                user.Role = roles.FirstOrDefault(u => u.Id == roleId).Name;
+                user.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
-                if(user.Company == null)
+                if (user.Company == null)
                 {
                     user.Company = new() { Name = "" };
                 }
@@ -103,7 +109,7 @@ namespace Amazon.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult LockUnlock([FromBody]string id)
         {
-            var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+            var objFromDb = _unitOfWork.ApplicationUser.Get(u => u.Id == id);
             if(objFromDb == null)
             {
                 return Json(new { success = true, message = "Error while Locking/Unlocking" });
@@ -116,7 +122,8 @@ namespace Amazon.Areas.Admin.Controllers
             {
                 objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
             }
-            _db.SaveChanges();
+            _unitOfWork.ApplicationUser.Update(objFromDb);
+            _unitOfWork.Save();
             return Json(new { success = true, message = "Operation Successful" });
         }
         #endregion
