@@ -28,6 +28,10 @@ builder.Services.AddAuthentication().AddFacebook(option =>
 {
     option.AppId = "3701199836826235";
     option.AppSecret = "794665a7ebaf21a438d1b3e7ee8ec9c3";
+}).AddGoogle(option =>
+{
+    option.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    option.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 });
 
 builder.Services.AddDistributedMemoryCache();
